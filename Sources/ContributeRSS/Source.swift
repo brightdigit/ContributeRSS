@@ -87,7 +87,7 @@ extension RSSContent.Source {
     )
     let date = try require(item.published, itemError)
 
-    guard case let .podcast(episode) = item.media else { throw itemError }
+    guard case .podcast(let episode) = item.media else { throw itemError }
 
     func missing(_ field: RSSError.EpisodeField) -> RSSError {
       .missingFieldFromPodcastEpisode(String(describing: episode), field)
@@ -108,9 +108,16 @@ extension RSSContent.Source {
     guard episode.enclosure.type == "audio/mpeg" else { throw missing(.episode) }
 
     self.init(
-      episodeNo: episodeNo, slug: title.slugify(), title: title, date: date,
-      summary: summary, content: content, audioURL: episode.enclosure.url,
-      imageURL: imageURL, duration: duration, podcastID: id
+      episodeNo: episodeNo,
+      slug: title.slugify(),
+      title: title,
+      date: date,
+      summary: summary,
+      content: content,
+      audioURL: episode.enclosure.url,
+      imageURL: imageURL,
+      duration: duration,
+      podcastID: id
     )
   }
 }

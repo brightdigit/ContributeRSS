@@ -25,6 +25,10 @@ let package = Package(
         "Contribute",
         .product(name: "SyndiKit", package: "SyndiKit")
       ]
+    ),
+    .testTarget(
+      name: "ContributeRSSTests",
+      dependencies: ["ContributeRSS"]
     )
   ]
 )
