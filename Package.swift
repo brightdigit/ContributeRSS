@@ -5,9 +5,14 @@ import PackageDescription
 
 let package = Package(
   name: "ContributeRSS",
-  // Matches the root package floor (raised to .v15 for issue #44); the vendored
-  // Publish stack also requires macOS 15 (Synchronization.Mutex).
-  platforms: [.macOS(.v15)],
+  // macOS 15 matches the root / Publish stack (Synchronization.Mutex).
+  // iOS/tvOS/watchOS floors match remote SyndiKit consumption in standalone CI.
+  platforms: [
+    .macOS(.v15),
+    .iOS(.v16),
+    .tvOS(.v16),
+    .watchOS(.v9)
+  ],
   products: [
     .library(
       name: "ContributeRSS",
