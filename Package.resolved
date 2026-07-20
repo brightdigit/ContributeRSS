@@ -1,6 +1,15 @@
 {
-  "originHash" : "91c1bd22269c87890070f079a4c9e314ad09d2d056a3f6f0cc3c50047dd1ebeb",
+  "originHash" : "23d18010e5048cc2a40b2f4fe33674f16c800dc74ee731da13c67c0226447d28",
   "pins" : [
+    {
+      "identity" : "contribute",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/Contribute.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "b674f44579bfcc55c389676ec6bd5af584d3dcbb"
+      }
+    },
     {
       "identity" : "swift-cmark",
       "kind" : "remoteSourceControl",
@@ -26,6 +35,15 @@
       "state" : {
         "branch" : "fix/swift-6.4-inline-crash",
         "revision" : "5d5d9ec29b5ba0b046944f9ad3ff668bb4996e08"
+      }
+    },
+    {
+      "identity" : "syndikit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/SyndiKit.git",
+      "state" : {
+        "branch" : "brightdigit-com-260621",
+        "revision" : "5496b47244628daafc747f6151d44ed9e9accfdb"
       }
     },
     {
