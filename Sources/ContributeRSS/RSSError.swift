@@ -1,6 +1,6 @@
 //
 //  RSSError.swift
-//  BrightDigit
+//  ContributeRSS
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -30,17 +30,43 @@
 import Contribute
 import Foundation
 
+/// An error raised while turning a feed into episodes.
+///
+/// Most of these are per-item and non-fatal: ``RSSContent/items(from:id:)`` catches them,
+/// logs the offending item to standard error, and moves on. ``invalidRSS(_:)`` is the
+/// exception — it means the URL did not decode as an RSS feed at all.
 public enum RSSError: ContributeError {
+  /// The URL's contents did not decode as an RSS feed.
   case invalidRSS(URL)
+
+  /// A feed item could not be read as a podcast episode.
+  ///
+  /// The payload is a description of the offending item, for logging.
   case invalidPodcastEpisodeFromRSSItem(String)
+
+  /// A podcast episode was missing a field this package requires.
+  ///
+  /// The payload is a description of the offending episode plus the missing field.
   case missingFieldFromPodcastEpisode(String, EpisodeField)
 
+  /// A field required to build a ``RSSContent/Source``.
   public enum EpisodeField: Sendable {
+    /// `itunes:duration`.
     case duration
+
+    /// `itunes:title`.
     case title
+
+    /// `itunes:episode`, or an enclosure that is not `audio/mpeg`.
     case episode
+
+    /// `itunes:summary` and `itunes:subtitle` were both absent.
     case summary
+
+    /// `itunes:image`, with no channel artwork to fall back to.
     case imageHref
+
+    /// The item `<link>`, used by callers that derive identifiers from it.
     case link
   }
 }

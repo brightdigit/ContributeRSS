@@ -1,6 +1,6 @@
 //
 //  RSSContent.swift
-//  BrightDigit
+//  ContributeRSS
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -31,13 +31,43 @@ import Contribute
 import Foundation
 import SyndiKit
 
+/// The Contribute content type for podcast RSS feeds.
+///
+/// `RSSContent` is a namespace, not a value: it binds ``RSSContent/Source`` to the
+/// ``RSSContent/MarkdownExtractor`` and ``RSSContent/FrontMatterTranslator`` that know
+/// how to render it, which is all Contribute needs in order to write Markdown files.
+///
+/// Decode a feed with ``RSSContent/items(from:id:)``, then hand the result to one of the
+/// `write(episodes:atContentPathURL:...)` methods.
 public enum RSSContent: ContentType {
+  /// The per-episode model produced from a feed item.
   public typealias SourceType = Source
+
+  /// The extractor that renders an episode's show notes as the Markdown body.
   public typealias MarkdownExtractorType = MarkdownExtractor
+
+  /// The translator that maps an episode onto YAML front matter.
   public typealias FrontMatterTranslatorType = FrontMatterTranslator
 }
 
 extension RSSContent {
+  /// Downloads a podcast feed and decodes it into one source per usable episode.
+  ///
+  /// Decoding is deliberately forgiving. An episode with no `<itunes:image>` falls back
+  /// to the channel's artwork instead of being dropped, and an item that cannot be
+  /// turned into a ``RSSContent/Source`` at all — missing duration, title, episode
+  /// number or summary, or a non-`audio/mpeg` enclosure — is reported on standard error
+  /// and skipped, so one malformed entry never fails a whole import.
+  ///
+  /// The one hard failure is the identifier: if `id` throws for any item, that error
+  /// propagates and no episodes are returned.
+  ///
+  /// - Parameters:
+  ///   - rssURL: The feed to read. Loaded synchronously with `Data(contentsOf:)`.
+  ///   - id: Derives a stable identifier for a feed item, e.g. its GUID or link slug.
+  /// - Returns: The decodable episodes, in feed order.
+  /// - Throws: ``RSSError/invalidRSS(_:)`` if the URL does not decode as an RSS feed,
+  ///   any error thrown by `id`, or an underlying decoding error.
   public static func items(from rssURL: URL, id: (RSSItem) throws -> String) throws
     -> [Source]
   {

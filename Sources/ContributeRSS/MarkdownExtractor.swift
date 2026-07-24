@@ -1,6 +1,6 @@
 //
 //  MarkdownExtractor.swift
-//  BrightDigit
+//  ContributeRSS
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -31,14 +31,28 @@ import Contribute
 import Foundation
 
 extension RSSContent {
+  /// Produces the Markdown body of an episode from its show notes.
+  ///
+  /// The show notes are returned unchanged; Contribute applies the caller's
+  /// HTML-to-Markdown conversion to the finished document, so this extractor
+  /// deliberately ignores the conversion closure it is handed.
   public struct MarkdownExtractor: Contribute.MarkdownExtractor {
+    /// The episode model this extractor reads.
     public typealias SourceType = Source
 
+    /// Creates an extractor.
     public init() {}
 
+    /// Returns the episode's show notes as the Markdown body.
+    ///
+    /// - Parameters:
+    ///   - source: The episode to render.
+    ///   - htmlToMarkdown: Ignored; the conversion is applied downstream by Contribute.
+    /// - Returns: The episode's ``RSSContent/Source/content``, unmodified.
+    /// - Throws: Never; the signature is `throws` to satisfy the protocol requirement.
     public func markdown(
       from source: SourceType,
-      using _: @escaping (String) throws -> String
+      using htmlToMarkdown: @escaping (String) throws -> String
     ) throws -> String {
       source.content
     }

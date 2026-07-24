@@ -1,6 +1,6 @@
 //
 //  Source.swift
-//  BrightDigit
+//  ContributeRSS
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -32,18 +32,63 @@ import Foundation
 import SyndiKit
 
 extension RSSContent {
+  /// A single podcast episode, flattened out of an RSS feed item.
+  ///
+  /// This is the `SourceType` the rest of the pipeline is generic over. Values are
+  /// normally produced by ``RSSContent/items(from:id:)`` rather than constructed by
+  /// hand, but the memberwise initializer is public so callers can synthesize
+  /// episodes in tests or merge in metadata from another service.
   public struct Source: Sendable {
+    /// The episode number, from `itunes:episode`.
     public let episodeNo: Int
+
+    /// A URL-safe slug derived from the episode title, used as the file name.
     public let slug: String
+
+    /// The episode title, from `itunes:title`.
     public let title: String
+
+    /// The publication date of the feed item.
     public let date: Date
+
+    /// A short description: the first paragraph of `itunes:summary`, falling back
+    /// to `itunes:subtitle`.
     public let summary: String
+
+    /// The full show notes, from `content:encoded` or the item `<description>`.
+    ///
+    /// Usually HTML — the HTML-to-Markdown conversion is the caller's, applied
+    /// downstream by Contribute.
     public let content: String
+
+    /// The `audio/mpeg` enclosure URL for the episode audio.
     public let audioURL: URL
+
+    /// Episode artwork, from `itunes:image`, falling back to the channel artwork.
     public let imageURL: URL
+
+    /// The episode length in seconds, from `itunes:duration`.
     public let duration: TimeInterval
+
+    /// The caller-supplied identifier for this episode.
+    ///
+    /// Whatever the `id` closure passed to ``RSSContent/items(from:id:)`` returned —
+    /// a GUID, a link slug, or any other stable per-episode key.
     public let podcastID: String
 
+    /// Creates an episode source from its component fields.
+    ///
+    /// - Parameters:
+    ///   - episodeNo: The episode number.
+    ///   - slug: A URL-safe slug used as the output file name.
+    ///   - title: The episode title.
+    ///   - date: The publication date.
+    ///   - summary: A short description.
+    ///   - content: The full show notes.
+    ///   - audioURL: The episode audio URL.
+    ///   - imageURL: The episode artwork URL.
+    ///   - duration: The episode length in seconds.
+    ///   - podcastID: A stable per-episode identifier.
     public init(
       episodeNo: Int,
       slug: String,

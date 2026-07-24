@@ -1,6 +1,6 @@
 //
 //  FrontMatterTranslator.swift
-//  BrightDigit
+//  ContributeRSS
 //
 //  Created by Leo Dion.
 //  Copyright © 2026 BrightDigit.
@@ -31,10 +31,22 @@ import Contribute
 import Foundation
 
 extension RSSContent {
+  /// Maps an episode onto the front matter written above the Markdown body.
+  ///
+  /// This is the default translator, producing the field set `brightdigit.com` expects.
+  /// Sites wanting a different shape pass their own type to the
+  /// `write(episodes:atContentPathURL:using:frontMatterTranslatorType:options:)` overload.
   public struct FrontMatterTranslator: Contribute.FrontMatterTranslator {
+    /// The episode model this translator reads.
     public typealias SourceType = Source
+
+    /// The encodable front matter this translator produces.
     public typealias FrontMatterType = FrontMatter
 
+    /// The YAML front matter emitted for one episode.
+    ///
+    /// Encodes as `title`, `date`, `description`, `featuredImage`, `audioDuration`
+    /// (seconds, rounded down), and `podcastID`.
     public struct FrontMatter: Codable {
       internal let title: String
       internal let date: String
@@ -43,6 +55,9 @@ extension RSSContent {
       internal let audioDuration: Int
       internal let podcastID: String
 
+      /// Creates front matter from an episode.
+      ///
+      /// - Parameter episode: The episode to describe.
       public init(episode: Source) {
         title = episode.title
         date = YAML.dateFormatter.string(from: episode.date)
@@ -53,8 +68,13 @@ extension RSSContent {
       }
     }
 
+    /// Creates a translator.
     public init() {}
 
+    /// Builds the front matter for one episode.
+    ///
+    /// - Parameter source: The episode to describe.
+    /// - Returns: The encodable front matter for that episode.
     public func frontMatter(from source: Source) -> FrontMatter {
       FrontMatter(episode: source)
     }
