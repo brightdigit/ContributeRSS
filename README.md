@@ -1,4 +1,4 @@
-![ContributeRSS Logo](Sources/ContributeRSS/ContributeRSS.docc/Resources/ContributeRSSLogo.png)
+![ContributeRSS Logo](Sources/ContributeRSS/ContributeRSS.docc/Resources/ContributeRSSLogo.svg)
 
 # ContributeRSS
 

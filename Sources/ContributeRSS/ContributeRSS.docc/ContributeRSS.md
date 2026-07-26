@@ -4,6 +4,8 @@ Turn podcast RSS feeds into Markdown files with YAML front matter.
 
 ## Overview
 
+![Logo](ContributeRSSLogo.svg)
+
 `ContributeRSS` is the RSS/Atom bridge between
 [SyndiKit](https://github.com/brightdigit/SyndiKit) and
 [Contribute](https://github.com/brightdigit/Contribute).
