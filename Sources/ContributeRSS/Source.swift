@@ -115,6 +115,25 @@ extension RSSContent {
   }
 }
 
+
+private let rssDiagnosticLimit = 120
+
+private func boundedRSSDiagnostic(_ value: String, limit: Int = rssDiagnosticLimit) -> String {
+  guard value.count > limit else { return value }
+  return String(value.prefix(limit)) + "…"
+}
+
+private func boundedRSSItemDiagnostic(_ item: RSSItem) -> String {
+  let title = item.title ?? "(untitled)"
+  let link = item.link?.absoluteString ?? "(no link)"
+  return boundedRSSDiagnostic("title=\(title), link=\(link)")
+}
+
+private func boundedPodcastEpisodeDiagnostic(_ episode: any PodcastEpisode) -> String {
+  let title = episode.title ?? "(untitled)"
+  return boundedRSSDiagnostic("title=\(title)")
+}
+
 private func require<Value>(
   _ value: Value?,
   _ error: @autoclosure () -> RSSError
@@ -125,7 +144,7 @@ private func require<Value>(
 
 extension RSSContent.Source {
   internal init(item: RSSItem, id: String, fallbackImageURL: URL? = nil) throws {
-    let itemError = RSSError.invalidPodcastEpisodeFromRSSItem(String(describing: item))
+    let itemError = RSSError.invalidPodcastEpisodeFromRSSItem(boundedRSSItemDiagnostic(item))
     let content = try require(
       item.contentEncoded?.value ?? item.description?.value,
       itemError
@@ -135,7 +154,7 @@ extension RSSContent.Source {
     guard case .podcast(let episode) = item.media else { throw itemError }
 
     func missing(_ field: RSSError.EpisodeField) -> RSSError {
-      .missingFieldFromPodcastEpisode(String(describing: episode), field)
+      .missingFieldFromPodcastEpisode(boundedPodcastEpisodeDiagnostic(episode), field)
     }
 
     let duration = try require(episode.duration, missing(.duration))
