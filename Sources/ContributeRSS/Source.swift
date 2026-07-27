@@ -115,11 +115,12 @@ extension RSSContent {
   }
 }
 
-
 private let rssDiagnosticLimit = 120
 
 private func boundedRSSDiagnostic(_ value: String, limit: Int = rssDiagnosticLimit) -> String {
-  guard value.count > limit else { return value }
+  guard value.count > limit else {
+    return value
+  }
   return String(value.prefix(limit)) + "…"
 }
 
